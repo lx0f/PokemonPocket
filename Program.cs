@@ -7,7 +7,11 @@ namespace PokemonPocket
         static void Main(string[] args)
         {
             Game game = new Game();
-            game.CreatePlayer();
+            game.AddPlayer();
+            game.LoadPlayer();
+            game.UpdatePlayer();
+            game.RemovePlayer();
+            game.ShowPlayerInfo();
         }
     }
 }
