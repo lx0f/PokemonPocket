@@ -4,8 +4,9 @@ namespace PokemonPocket
 {
     class Game
     {
-        private PokemonContext PokemonContext { get; set; }
-        private Player Player { get; set; }
+        public PokemonContext PokemonContext { get; set; }
+        // TODO: change to private
+        public Player Player { get; set; }
         public Game()
         {
             PokemonContext = new PokemonContext();
@@ -95,7 +96,7 @@ namespace PokemonPocket
             }
             else
             {
-                Player.ChangeName(newPlayerName);
+                Player.Name = newPlayerName;
                 PokemonContext.SaveChanges();
             }
             return Player;
