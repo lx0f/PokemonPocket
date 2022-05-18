@@ -23,7 +23,8 @@ namespace PokemonPocket
             Console.Write(">>> ");
             string playerName = Console.ReadLine();
 
-            Player existingPlayer = PokemonContext.Players.SingleOrDefault(player => player.Name == playerName);
+            Player existingPlayer = PokemonContext.Players
+                .SingleOrDefault(player => player.Name == playerName);
             if (existingPlayer == null)
             {
                 Player newPlayer = new Player(playerName);
@@ -46,7 +47,8 @@ namespace PokemonPocket
             Console.Write(">>> ");
             string playerName = Console.ReadLine();
 
-            Player existingPlayer = PokemonContext.Players.SingleOrDefault(player => player.Name == playerName);
+            Player existingPlayer = PokemonContext.Players
+                .SingleOrDefault(player => player.Name == playerName);
             if (existingPlayer == null)
             {
                 Console.WriteLine($"There are no players with the name {playerName}");
@@ -63,11 +65,14 @@ namespace PokemonPocket
         public Player LoadPlayer()
         {
             Console.WriteLine("Choose player");
-            PokemonContext.Players.ToList().ForEach(player => Console.WriteLine(player.Name));
+            PokemonContext.Players
+                .ToList()
+                .ForEach(player => Console.WriteLine(player.Name));
             Console.Write(">>> ");
             string playerName = Console.ReadLine();
 
-            Player existingPlayer = PokemonContext.Players.SingleOrDefault(player => player.Name == playerName);
+            Player existingPlayer = PokemonContext.Players
+                .SingleOrDefault(player => player.Name == playerName);
             if (existingPlayer == null)
             {
                 Console.WriteLine($"There is no player with the name {playerName}");
@@ -90,7 +95,8 @@ namespace PokemonPocket
             {
                 Console.WriteLine("The name you entered is the same as your existing one.");
             }
-            else if (PokemonContext.Players.SingleOrDefault(player => player.Name == newPlayerName) != null)
+            else if (PokemonContext.Players
+                .SingleOrDefault(player => player.Name == newPlayerName) != null)
             {
                 Console.WriteLine("Another player with this name exists!");
             }
