@@ -1,3 +1,5 @@
 obj
 bin
 Pokemon.db
+Pokemon.db-shm
+Pokemon.db-wal
