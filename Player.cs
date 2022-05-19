@@ -81,12 +81,32 @@ namespace PokemonPocket
 
             if (pokemonCount >= pokemonMaster.EvolveCriteria)
             {
+                int deleteCriteria = pokemonMaster.EvolveCriteria;
                 List<Pokemon> toDeletePokemons = Pokemons
                     .Where(pokemon => pokemon.Name == pokemonName)
                     .OrderBy(pokemon => pokemon.MaxHealth)
-                    .Take(pokemonMaster.EvolveCriteria)
+                    // .Take(pokemonMaster.EvolveCriteria)
                     .ToList();
-                pokemonContext.Pokemons.RemoveRange(toDeletePokemons);
+
+                // Lets user select which pokemon to sacrifice
+                List<Pokemon> confirmDeletePokemon = new List<Pokemon>() { };
+                while (deleteCriteria > 0)
+                {
+                    Console.WriteLine($"Choose which {pokemonName} to sacrifice, {deleteCriteria} left");
+                    for (int i = 0; i < toDeletePokemons.Count; i++)
+                    {
+                        Pokemon pokemon = toDeletePokemons[i];
+                        Console.WriteLine($"{i}: {pokemon.Name} Lv. {pokemon.Level} Hp. {pokemon.Health}/{pokemon.MaxHealth}");
+                    }
+                    Console.Write(">>> ");
+                    int index = Int32.Parse(Console.ReadLine());
+                    Pokemon selectedPokemon = toDeletePokemons[index];
+                    toDeletePokemons.Remove(selectedPokemon);
+                    confirmDeletePokemon.Add(selectedPokemon);
+                    --deleteCriteria;
+                }
+
+                pokemonContext.Pokemons.RemoveRange(confirmDeletePokemon);
 
                 Type evolvedPokemonClass = Type.GetType($"PokemonPocket.{pokemonMaster.EvolveTo}");
                 Pokemon newPokemon = (Pokemon)Activator.CreateInstance(evolvedPokemonClass, args: true);
