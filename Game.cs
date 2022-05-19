@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 namespace PokemonPocket
 {
     class Game
@@ -14,6 +15,28 @@ namespace PokemonPocket
             PokemonContext.Database.EnsureCreated();
             Console.WriteLine("Loading assets");
             Console.WriteLine("Welcome to Pokemon Pocket!");
+        }
+
+        public void InitializeGameSettings()
+        {
+            PokemonContext.Skills.RemoveRange(PokemonContext.Skills.ToList());
+            PokemonContext.SkillMaps.RemoveRange(PokemonContext.SkillMaps.ToList());
+
+            Console.WriteLine("Loading Skills...");
+            List<Skill> skills = new List<Skill>() {
+                new Skill("Lightning Bolt", 5),
+                new Skill("Solar Power", 5),
+                new Skill("Run Away", 0),
+            };
+            PokemonContext.Skills.AddRange(skills);
+            Console.WriteLine("Loading Skill Mapping...");
+            List<SkillMap> skillMaps = new List<SkillMap>() {
+                new SkillMap("Lightning Bolt", "Pikachu", 1),
+                new SkillMap("Solar Power", "Charmander", 1),
+                new SkillMap("Run Away", "Eevee", 1)
+            };
+            PokemonContext.SkillMaps.AddRange(skillMaps);
+            PokemonContext.SaveChanges();
         }
 
         // TODO: Change to private

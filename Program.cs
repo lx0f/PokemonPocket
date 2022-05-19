@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 
 namespace PokemonPocket
 {
@@ -9,12 +9,20 @@ namespace PokemonPocket
             Game game = new Game();
             game.AddPlayer();
             game.LoadPlayer();
+            game.InitializeGameSettings();
             game.Player.AddPokemon(game.PokemonContext);
+            game.Player.Pokemons.ForEach(pokemon =>
+            {
+                pokemon.LoadSkills(game.PokemonContext);
+                pokemon.ShowSkills();
+            });
             game.Player.AddPokemon(game.PokemonContext);
             game.Player.ShowPokemons();
+            game.Player.ShowEvolvablePokemons();
             game.Player.EvolvePokemon(game.PokemonContext);
             // game.Player.RemovePokemon(game.PokemonContext);
             game.Player.ShowPokemons();
+            game.ShowPlayerInfo();
         }
     }
 }

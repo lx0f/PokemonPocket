@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace PokemonPocket
@@ -10,13 +12,50 @@ namespace PokemonPocket
         [ForeignKey("Player")]
         public int PlayerID { get; set; }
         public int Level { get; set; }
+        public int Experience { get; set; }
         public string Name { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
+        [NotMapped]
+        public List<Skill> Skills { get; set; }
         public Pokemon()
         {
             Name = GetType().Name;
             Level = 1;
+            Experience = 0;
+        }
+        public List<Skill> LoadSkills(PokemonContext pokemonContext)
+        {
+            List<Skill> skills = new List<Skill>() { };
+            pokemonContext.SkillMaps
+                .Where(skillMap => skillMap.PokemonName == Name)
+                .Where(skillMap => skillMap.LevelCriteria <= Level)
+                .OrderBy(skillMap => skillMap.SkillName)
+                .ToList()
+                .ForEach(skillMap =>
+                {
+                    Skill skill = pokemonContext.Skills.Find(skillMap.SkillName);
+                    skills.Add(skill);
+                });
+            Skills = skills;
+            return skills;
+        }
+        public void LevelUp(PokemonContext pokemonContext)
+        {
+            ++Level;
+            LoadSkills(pokemonContext);
+        }
+        public void ShowSkills()
+        {
+            for (int i = 0; i < Skills.Count; i++)
+            {
+                Skill skill = Skills[i];
+                Console.WriteLine($"ID: {i} Name: {skill.Name} Base Damage: {skill.BaseDamage}");
+            }
+        }
+        public Skill UseSkill(int index)
+        {
+            return Skills[index];
         }
         public static bool IsPokemon(string pokemonName)
         {
@@ -29,8 +68,8 @@ namespace PokemonPocket
     {
         public Pikachu() : base()
         {
-            Health = 20;
             MaxHealth = 20;
+            Health = MaxHealth;
         }
     }
 
@@ -39,14 +78,7 @@ namespace PokemonPocket
         public Raichu(bool evolved = false) : base()
         {
             MaxHealth = 30;
-            if (evolved)
-            {
-                Health = 0;
-            }
-            else
-            {
-                Health = 30;
-            }
+            Health = evolved ? 0 : MaxHealth;
         }
     }
 }
