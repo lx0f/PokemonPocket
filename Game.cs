@@ -17,18 +17,43 @@ namespace PokemonPocket
             Console.WriteLine("Welcome to Pokemon Pocket!");
         }
 
-        public void InitializeGameSettings()
+        public void BuildGameAssets()
         {
             PokemonContext.Skills.RemoveRange(PokemonContext.Skills.ToList());
             PokemonContext.SkillMaps.RemoveRange(PokemonContext.SkillMaps.ToList());
 
+            Console.WriteLine("Loading Types...");
+            List<PType> pTypes = new List<PType>() {
+                new PType("Electric"),
+                new PType("Fire"),
+                new PType("Normal"),
+            };
+            PokemonContext.PTypes.AddRange(pTypes);
+
+            Console.WriteLine("Loading Type Strengths...");
+            List<PTypeStrength> pTypeStrengths = new List<PTypeStrength>()
+            {
+                // TODO: Add more types
+            };
+            PokemonContext.PTypeStrengths.AddRange(pTypeStrengths);
+
+            Console.WriteLine("Loading Type Resistants...");
+            List<PTypeResistant> pTypeResistants = new List<PTypeResistant>()
+            {
+                // TODO: Add more types
+                new PTypeResistant("Fire", "Fire", 0.8m),
+                new PTypeResistant("Electric", "Electric", 0.8m),
+            };
+            PokemonContext.PTypeResistants.AddRange(pTypeResistants);
+
             Console.WriteLine("Loading Skills...");
             List<Skill> skills = new List<Skill>() {
-                new Skill("Lightning Bolt", 5),
-                new Skill("Solar Power", 5),
-                new Skill("Run Away", 0),
+                new Skill("Lightning Bolt", 5, "Electric"),
+                new Skill("Solar Power", 5, "Fire"),
+                new Skill("Run Away", 0, "Normal"),
             };
             PokemonContext.Skills.AddRange(skills);
+
             Console.WriteLine("Loading Skill Mapping...");
             List<SkillMap> skillMaps = new List<SkillMap>() {
                 new SkillMap("Lightning Bolt", "Pikachu", 1),
@@ -36,6 +61,7 @@ namespace PokemonPocket
                 new SkillMap("Run Away", "Eevee", 1)
             };
             PokemonContext.SkillMaps.AddRange(skillMaps);
+
             PokemonContext.SaveChanges();
         }
 

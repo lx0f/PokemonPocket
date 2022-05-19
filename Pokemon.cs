@@ -11,8 +11,9 @@ namespace PokemonPocket
         public int PokemonID { get; set; }
         [ForeignKey("Player")]
         public int PlayerID { get; set; }
+        [ForeignKey("PType")]
+        public string PTypeName { get; set; }
         public int Level { get; set; }
-        public int Experience { get; set; }
         public string Name { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
@@ -22,7 +23,6 @@ namespace PokemonPocket
         {
             Name = GetType().Name;
             Level = 1;
-            Experience = 0;
         }
         public List<Skill> LoadSkills(PokemonContext pokemonContext)
         {
@@ -40,9 +40,11 @@ namespace PokemonPocket
             Skills = skills;
             return skills;
         }
-        public void LevelUp(PokemonContext pokemonContext)
+        // TODO
+        public void TryLevelUp(PokemonContext pokemonContext)
         {
             ++Level;
+            MaxHealth += 5;
             LoadSkills(pokemonContext);
         }
         public void ShowSkills()
@@ -70,6 +72,7 @@ namespace PokemonPocket
         {
             MaxHealth = 20;
             Health = MaxHealth;
+            PTypeName = "Electric";
         }
     }
 

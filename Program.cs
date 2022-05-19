@@ -9,7 +9,7 @@ namespace PokemonPocket
             Game game = new Game();
             game.AddPlayer();
             game.LoadPlayer();
-            game.InitializeGameSettings();
+            game.BuildGameAssets();
             game.Player.AddPokemon(game.PokemonContext);
             game.Player.Pokemons.ForEach(pokemon =>
             {

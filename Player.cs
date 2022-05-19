@@ -66,6 +66,7 @@ namespace PokemonPocket
         }
         public Pokemon EvolvePokemon(PokemonContext pokemonContext)
         {
+            // ShowEvolvablePokemons();
             Console.WriteLine("Enter pokemon name you want to evolve");
             Console.Write(">>> ");
             string pokemonName = Console.ReadLine();
@@ -135,6 +136,7 @@ namespace PokemonPocket
             Pokemons.ForEach(pokemon =>
             {
                 Console.WriteLine($"Name: {pokemon.Name}");
+                Console.WriteLine($"Type: {pokemon.PTypeName}");
                 Console.WriteLine($"Level: {pokemon.Level}");
                 Console.WriteLine($"Health: {pokemon.Health}");
                 Console.WriteLine($"Max Health: {pokemon.MaxHealth}");
