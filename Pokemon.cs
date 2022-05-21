@@ -14,6 +14,9 @@ namespace PokemonPocket
         [ForeignKey("PType")]
         public string PTypeName { get; set; }
         public int Level { get; set; }
+        public int Experience { get; set; }
+        public int MaxExperience { get; set; }
+        public int BaseExperience { get; set; }
         public string Name { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
@@ -22,6 +25,8 @@ namespace PokemonPocket
         public Pokemon()
         {
             Name = GetType().Name;
+            Experience = 0;
+            MaxExperience = 5;
             Level = 1;
         }
         public List<Skill> LoadSkills(PokemonContext pokemonContext)
@@ -43,9 +48,14 @@ namespace PokemonPocket
         // TODO
         public void TryLevelUp(PokemonContext pokemonContext)
         {
-            ++Level;
-            MaxHealth += 5;
-            LoadSkills(pokemonContext);
+            if (Experience >= MaxExperience)
+            {
+                ++Level;
+                Experience = Experience - MaxExperience;
+                MaxExperience = (int)(MaxExperience * 1.5);
+                MaxHealth += 5;
+                LoadSkills(pokemonContext);
+            }
         }
         public void ShowSkills()
         {
@@ -72,6 +82,7 @@ namespace PokemonPocket
         {
             MaxHealth = 20;
             Health = MaxHealth;
+            BaseExperience = 40;
             PTypeName = "Electric";
         }
     }
@@ -82,6 +93,7 @@ namespace PokemonPocket
         {
             MaxHealth = 30;
             Health = evolved ? 0 : MaxHealth;
+            BaseExperience = 60;
         }
     }
 }
