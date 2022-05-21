@@ -23,28 +23,16 @@ namespace PokemonPocket
             PokemonContext.SkillMaps.RemoveRange(PokemonContext.SkillMaps.ToList());
 
             Console.WriteLine("Loading Types...");
-            List<PType> pTypes = new List<PType>() {
-                new PType("Electric"),
-                new PType("Fire"),
-                new PType("Normal"),
-            };
-            PokemonContext.PTypes.UpdateRange(pTypes);
+            List<PType> pTypes = PType.ReturnTypes();
+            PokemonContext.PTypes.AddRange(pTypes);
 
             Console.WriteLine("Loading Type Strengths...");
-            List<PTypeStrength> pTypeStrengths = new List<PTypeStrength>()
-            {
-                // TODO: Add more types
-            };
-            PokemonContext.PTypeStrengths.UpdateRange(pTypeStrengths);
+            List<PTypeStrength> pTypeStrengths = PTypeStrength.ReturnTypeStrengths();
+            PokemonContext.PTypeStrengths.AddRange(pTypeStrengths);
 
             Console.WriteLine("Loading Type Resistants...");
-            List<PTypeResistant> pTypeResistants = new List<PTypeResistant>()
-            {
-                // TODO: Add more types
-                new PTypeResistant("Fire", "Fire", 0.8m),
-                new PTypeResistant("Electric", "Electric", 0.8m),
-            };
-            PokemonContext.PTypeResistants.UpdateRange(pTypeResistants);
+            List<PTypeResistant> pTypeResistants = PTypeResistant.ReturnTypeResists();
+            PokemonContext.PTypeResistants.AddRange(pTypeResistants);
 
             Console.WriteLine("Loading Skills...");
             List<Skill> skills = new List<Skill>() {
@@ -52,16 +40,15 @@ namespace PokemonPocket
                 new Skill("Solar Power", 5, "Fire"),
                 new Skill("Run Away", 0, "Normal"),
             };
-            PokemonContext.Skills.UpdateRange(skills);
+            PokemonContext.Skills.AddRange(skills);
 
             Console.WriteLine("Loading Skill Mapping...");
             List<SkillMap> skillMaps = new List<SkillMap>() {
                 new SkillMap("Lightning Bolt", "Pikachu", 1),
-                new SkillMap("Solar Power", "Pikachu", 2),
                 new SkillMap("Solar Power", "Charmander", 1),
                 new SkillMap("Run Away", "Eevee", 1)
             };
-            PokemonContext.SkillMaps.UpdateRange(skillMaps);
+            PokemonContext.SkillMaps.AddRange(skillMaps);
 
             PokemonContext.SaveChanges();
         }
