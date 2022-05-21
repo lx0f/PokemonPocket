@@ -28,14 +28,14 @@ namespace PokemonPocket
                 new PType("Fire"),
                 new PType("Normal"),
             };
-            PokemonContext.PTypes.AddRange(pTypes);
+            PokemonContext.PTypes.UpdateRange(pTypes);
 
             Console.WriteLine("Loading Type Strengths...");
             List<PTypeStrength> pTypeStrengths = new List<PTypeStrength>()
             {
                 // TODO: Add more types
             };
-            PokemonContext.PTypeStrengths.AddRange(pTypeStrengths);
+            PokemonContext.PTypeStrengths.UpdateRange(pTypeStrengths);
 
             Console.WriteLine("Loading Type Resistants...");
             List<PTypeResistant> pTypeResistants = new List<PTypeResistant>()
@@ -44,7 +44,7 @@ namespace PokemonPocket
                 new PTypeResistant("Fire", "Fire", 0.8m),
                 new PTypeResistant("Electric", "Electric", 0.8m),
             };
-            PokemonContext.PTypeResistants.AddRange(pTypeResistants);
+            PokemonContext.PTypeResistants.UpdateRange(pTypeResistants);
 
             Console.WriteLine("Loading Skills...");
             List<Skill> skills = new List<Skill>() {
@@ -52,15 +52,16 @@ namespace PokemonPocket
                 new Skill("Solar Power", 5, "Fire"),
                 new Skill("Run Away", 0, "Normal"),
             };
-            PokemonContext.Skills.AddRange(skills);
+            PokemonContext.Skills.UpdateRange(skills);
 
             Console.WriteLine("Loading Skill Mapping...");
             List<SkillMap> skillMaps = new List<SkillMap>() {
                 new SkillMap("Lightning Bolt", "Pikachu", 1),
+                new SkillMap("Solar Power", "Pikachu", 2),
                 new SkillMap("Solar Power", "Charmander", 1),
                 new SkillMap("Run Away", "Eevee", 1)
             };
-            PokemonContext.SkillMaps.AddRange(skillMaps);
+            PokemonContext.SkillMaps.UpdateRange(skillMaps);
 
             PokemonContext.SaveChanges();
         }
@@ -165,9 +166,9 @@ namespace PokemonPocket
         public void Exit()
         {
             Console.WriteLine("Bye bye!!!");
+            PokemonContext.SaveChanges();
             Environment.Exit(0);
         }
-
         public void GameLoop()
         {
             BuildGameAssets();
@@ -193,7 +194,8 @@ namespace PokemonPocket
                 Console.WriteLine("3. List evolvable pokemons");
                 Console.WriteLine("4. Evolve pokemon");
                 Console.WriteLine("5. Battle");
-                Console.WriteLine("6. Exit");
+                Console.WriteLine("6. Heal pokemons");
+                Console.WriteLine("7. Exit");
 
                 Console.Write(">>> ");
                 int gameChoice = Int32.Parse(Console.ReadLine());
@@ -217,6 +219,9 @@ namespace PokemonPocket
                         computerBattle.FightLoop();
                         break;
                     case 6:
+                        Player.HealAllPokemons();
+                        break;
+                    case 7:
                         Exit();
                         break;
                 }

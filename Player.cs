@@ -139,8 +139,8 @@ namespace PokemonPocket
                 Console.WriteLine($"Name: {pokemon.Name}");
                 Console.WriteLine($"Type: {pokemon.PTypeName}");
                 Console.WriteLine($"Level: {pokemon.Level}");
-                Console.WriteLine($"Health: {pokemon.Health}");
-                Console.WriteLine($"Max Health: {pokemon.MaxHealth}");
+                Console.WriteLine($"Health: {pokemon.Health}/{pokemon.MaxHealth}");
+                Console.WriteLine($"Experience: {pokemon.Experience}/{pokemon.MaxExperience}");
             });
         }
         public void ShowEvolvablePokemons()
@@ -159,10 +159,7 @@ namespace PokemonPocket
         }
         public void HealAllPokemons()
         {
-            Pokemons.ForEach(pokemon =>
-            {
-                pokemon.Health = pokemon.MaxHealth;
-            });
+            Pokemons.ForEach(pokemon => pokemon.Health = pokemon.MaxHealth);
         }
     }
 }

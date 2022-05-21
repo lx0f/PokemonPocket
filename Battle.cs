@@ -43,6 +43,15 @@ namespace PokemonPocket
             Pokemon = Player.Pokemons[index];
             return Pokemon;
         }
+        public int CalculateExperienceYield(Pokemon pokemon, Pokemon enemyPokemon)
+        {
+            decimal b = enemyPokemon.BaseExperience;
+            decimal L = enemyPokemon.Level;
+            decimal Lp = pokemon.Level;
+            decimal exp = (decimal)Math.Pow(
+                (double)((2 * L + 10) / (L + Lp + 10)), 2.5) * ((b * L) / 5);
+            return (int)exp;
+        }
         public void PokemonAttacks(Pokemon attacker, Pokemon receiver, Skill skill)
         {
             // TODO: handle no weak or strong attacks
@@ -57,7 +66,6 @@ namespace PokemonPocket
                 .FirstOrDefault();
             if (damageMultiplier > 0)
             {
-                Console.WriteLine(damageMultiplier);
                 netDamage = (int)(damageMultiplier * skill.BaseDamage);
                 Console.WriteLine("It was very effective!");
             }
@@ -70,7 +78,6 @@ namespace PokemonPocket
                 .FirstOrDefault();
             if (resistMultiplier > 0)
             {
-                Console.WriteLine(resistMultiplier);
                 netDamage = (int)(resistMultiplier * skill.BaseDamage);
                 Console.WriteLine("It wasn't very effective...");
             }
@@ -123,6 +130,8 @@ namespace PokemonPocket
             else if (EnemyPokemon.Health <= 0)
             {
                 Console.WriteLine("You won!!!");
+                Pokemon.Experience += CalculateExperienceYield(Pokemon, EnemyPokemon);
+                Pokemon.TryLevelUp(PokemonContext);
                 Player.Wins += 1;
                 return;
             }
