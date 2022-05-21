@@ -128,6 +128,7 @@ namespace PokemonPocket
             List<Pokemon> playerPokemons = pokemonContext.Pokemons
                 .Where(pokemon => pokemon.PlayerID == PlayerID)
                 .ToList();
+            playerPokemons.ForEach(pokemon => pokemon.LoadSkills(pokemonContext));
             Pokemons = playerPokemons;
             return playerPokemons;
         }

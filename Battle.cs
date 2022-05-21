@@ -1,0 +1,131 @@
+using System;
+using System.Linq;
+namespace PokemonPocket
+{
+    class PlayerBattle
+    {
+    }
+    class ComputerBattle
+    {
+        public Player Player { get; set; }
+        public Pokemon Pokemon { get; set; }
+        public Pokemon EnemyPokemon { get; set; }
+        public PokemonContext PokemonContext { get; set; }
+        public ComputerBattle(Player player, PokemonContext pokemonContext)
+        {
+            Player = player;
+            PokemonContext = pokemonContext;
+            PlayerChoosePokemon();
+            EnemyPokemon = new Pikachu();
+            EnemyPokemon.LoadSkills(pokemonContext);
+        }
+        public void ShowScene()
+        {
+            int maxBars = 30;
+            int playerBars = (int)(maxBars * (decimal)Pokemon.Health / (decimal)Pokemon.MaxHealth);
+            int enemyBars = (int)(maxBars * (decimal)EnemyPokemon.Health / (decimal)EnemyPokemon.MaxHealth);
+            Console.WriteLine($"{Pokemon.Name}");
+            Console.WriteLine("[" + new String('#', playerBars) + new string(' ', maxBars - playerBars) + $"] {Pokemon.Health}/{Pokemon.MaxHealth}");
+            Console.WriteLine();
+            Console.WriteLine($"{EnemyPokemon.Name}");
+            Console.WriteLine("[" + new String('#', enemyBars) + new string(' ', maxBars - enemyBars) + "]");
+        }
+        public Pokemon PlayerChoosePokemon()
+        {
+            for (int i = 0; i < Player.Pokemons.Count; i++)
+            {
+                Pokemon pokemon = Player.Pokemons[i];
+                Console.WriteLine($"{i}: {pokemon.Name} Lv. {pokemon.Level} Hp. {pokemon.Health}/{pokemon.MaxHealth}");
+            }
+            Console.WriteLine("Choose your pokemon");
+            Console.Write(">>> ");
+            int index = Int32.Parse(Console.ReadLine());
+            Pokemon = Player.Pokemons[index];
+            return Pokemon;
+        }
+        public void PokemonAttacks(Pokemon attacker, Pokemon receiver, Skill skill)
+        {
+            // TODO: handle no weak or strong attacks
+            // Find strength
+            Console.WriteLine($"{attacker.Name} uses {skill.Name}!");
+
+            int netDamage = 0;
+            decimal damageMultiplier = PokemonContext.PTypeStrengths
+                .Where(strength => strength.Name == skill.PTypeName)
+                .Where(strength => strength.StrongAgainst == receiver.PTypeName)
+                .Select(strenth => strenth.DamageMultiplier)
+                .FirstOrDefault();
+            if (damageMultiplier > 0)
+            {
+                Console.WriteLine(damageMultiplier);
+                netDamage = (int)(damageMultiplier * skill.BaseDamage);
+                Console.WriteLine("It was very effective!");
+            }
+
+            // Find resist
+            decimal resistMultiplier = PokemonContext.PTypeResistants
+                .Where(resist => resist.Name == receiver.PTypeName)
+                .Where(resist => resist.ResistantAgainst == skill.PTypeName)
+                .Select(resist => resist.ResistMultiplier)
+                .FirstOrDefault();
+            if (resistMultiplier > 0)
+            {
+                Console.WriteLine(resistMultiplier);
+                netDamage = (int)(resistMultiplier * skill.BaseDamage);
+                Console.WriteLine("It wasn't very effective...");
+            }
+            receiver.Health -= netDamage;
+        }
+        public void FightLoop()
+        {
+            bool forfeited = false;
+            while ((Pokemon.Health > 0 && EnemyPokemon.Health > 0) && !forfeited)
+            {
+                ShowScene();
+                Console.WriteLine("1. Fight");
+                Console.WriteLine("2. Pokemon");
+                Console.WriteLine("3. Forfeit");
+
+                Console.Write(">>> ");
+                int choice = Int32.Parse(Console.ReadLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        // Choose skill
+                        Pokemon.ShowSkills();
+                        Console.WriteLine("Choose skill");
+                        Console.Write(">>> ");
+                        int skillChoice = Int32.Parse(Console.ReadLine());
+                        Skill skill = Pokemon.UseSkill(skillChoice);
+                        PokemonAttacks(Pokemon, EnemyPokemon, skill);
+                        if (EnemyPokemon.Health > 0)
+                        {
+                            skill = EnemyPokemon.UseSkill(0);
+                            PokemonAttacks(EnemyPokemon, Pokemon, skill);
+                        }
+                        break;
+                    case 2:
+                        PlayerChoosePokemon();
+                        break;
+                    case 3:
+                        Console.WriteLine("You forfeited!");
+                        forfeited = true;
+                        break;
+                }
+            }
+            Player.TotalFights += 1;
+
+            if (Pokemon.Health <= 0 || forfeited)
+            {
+                Console.WriteLine("You loss!!");
+            }
+            else if (EnemyPokemon.Health <= 0)
+            {
+                Console.WriteLine("You won!!!");
+                Player.Wins += 1;
+                return;
+            }
+        }
+    }
+}

@@ -161,5 +161,66 @@ namespace PokemonPocket
         {
             Console.WriteLine(Player.Summary);
         }
+
+        public void Exit()
+        {
+            Console.WriteLine("Bye bye!!!");
+            Environment.Exit(0);
+        }
+
+        public void GameLoop()
+        {
+            BuildGameAssets();
+            Console.WriteLine("1. Create new player");
+            Console.WriteLine("2. Select player");
+            Console.Write(">>> ");
+            int playerChoice = Int32.Parse(Console.ReadLine());
+            switch (playerChoice)
+            {
+                case 1:
+                    AddPlayer();
+                    LoadPlayer();
+                    break;
+                case 2:
+                    LoadPlayer();
+                    break;
+            }
+            Player.LoadPokemons(PokemonContext);
+            while (true)
+            {
+                Console.WriteLine("1. Add pokemon");
+                Console.WriteLine("2. List pokemons");
+                Console.WriteLine("3. List evolvable pokemons");
+                Console.WriteLine("4. Evolve pokemon");
+                Console.WriteLine("5. Battle");
+                Console.WriteLine("6. Exit");
+
+                Console.Write(">>> ");
+                int gameChoice = Int32.Parse(Console.ReadLine());
+
+                switch (gameChoice)
+                {
+                    case 1:
+                        Player.AddPokemon(PokemonContext);
+                        break;
+                    case 2:
+                        Player.ShowPokemons();
+                        break;
+                    case 3:
+                        Player.ShowEvolvablePokemons();
+                        break;
+                    case 4:
+                        Player.EvolvePokemon(PokemonContext);
+                        break;
+                    case 5:
+                        ComputerBattle computerBattle = new ComputerBattle(Player, PokemonContext);
+                        computerBattle.FightLoop();
+                        break;
+                    case 6:
+                        Exit();
+                        break;
+                }
+            }
+        }
     }
 }

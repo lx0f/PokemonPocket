@@ -52,7 +52,7 @@ namespace PokemonPocket
             for (int i = 0; i < Skills.Count; i++)
             {
                 Skill skill = Skills[i];
-                Console.WriteLine($"ID: {i} Name: {skill.Name} Base Damage: {skill.BaseDamage}");
+                Console.WriteLine($"ID: {i} Name: {skill.Name} | {skill.PTypeName}");
             }
         }
         public Skill UseSkill(int index)
