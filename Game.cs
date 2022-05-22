@@ -13,7 +13,8 @@ namespace PokemonPocket
             PokemonContext = new PokemonContext();
             PokemonContext.Database.EnsureDeleted();
             PokemonContext.Database.EnsureCreated();
-            Console.WriteLine("Loading assets");
+            Console.WriteLine("Building game assets");
+            BuildGameAssets();
             Console.WriteLine("Welcome to Pokemon Pocket!");
         }
 
@@ -35,19 +36,11 @@ namespace PokemonPocket
             PokemonContext.PTypeResistants.AddRange(pTypeResistants);
 
             Console.WriteLine("Loading Skills...");
-            List<Skill> skills = new List<Skill>() {
-                new Skill("Lightning Bolt", 5, "Electric"),
-                new Skill("Solar Power", 5, "Fire"),
-                new Skill("Run Away", 0, "Normal"),
-            };
+            List<Skill> skills = Skill.ReturnSkills();
             PokemonContext.Skills.AddRange(skills);
 
             Console.WriteLine("Loading Skill Mapping...");
-            List<SkillMap> skillMaps = new List<SkillMap>() {
-                new SkillMap("Lightning Bolt", "Pikachu", 1),
-                new SkillMap("Solar Power", "Charmander", 1),
-                new SkillMap("Run Away", "Eevee", 1)
-            };
+            List<SkillMap> skillMaps = SkillMap.ReturnSkillMaps();
             PokemonContext.SkillMaps.AddRange(skillMaps);
 
             PokemonContext.SaveChanges();
@@ -68,34 +61,13 @@ namespace PokemonPocket
                 PokemonContext.Players.Add(newPlayer);
                 PokemonContext.SaveChanges();
                 Console.WriteLine($"Created new player {playerName}!");
-                Player = existingPlayer;
+                Player = newPlayer;
                 return newPlayer;
             }
             else
             {
                 Console.WriteLine($"A player with the name {playerName} already exists!");
                 return null;
-            }
-        }
-
-        public Player RemovePlayer()
-        {
-            Console.WriteLine("Enter name of player to delete");
-            Console.Write(">>> ");
-            string playerName = Console.ReadLine();
-
-            Player existingPlayer = PokemonContext.Players
-                .SingleOrDefault(player => player.Name == playerName);
-            if (existingPlayer == null)
-            {
-                Console.WriteLine($"There are no players with the name {playerName}");
-                return null;
-            }
-            else
-            {
-                PokemonContext.Players.Remove(existingPlayer);
-                PokemonContext.SaveChanges();
-                return existingPlayer;
             }
         }
 
@@ -122,34 +94,6 @@ namespace PokemonPocket
             }
         }
 
-        // Only if Player is loaded
-        public Player UpdatePlayer()
-        {
-            Console.WriteLine("Enter new player name replacement");
-            Console.Write(">>> ");
-            string newPlayerName = Console.ReadLine();
-            if (newPlayerName == Player.Name)
-            {
-                Console.WriteLine("The name you entered is the same as your existing one.");
-            }
-            else if (PokemonContext.Players
-                .SingleOrDefault(player => player.Name == newPlayerName) != null)
-            {
-                Console.WriteLine("Another player with this name exists!");
-            }
-            else
-            {
-                Player.Name = newPlayerName;
-                PokemonContext.SaveChanges();
-            }
-            return Player;
-        }
-
-        public void ShowPlayerInfo()
-        {
-            Console.WriteLine(Player.Summary);
-        }
-
         public void Exit()
         {
             Console.WriteLine("Bye bye!!!");
@@ -158,16 +102,14 @@ namespace PokemonPocket
         }
         public void GameLoop()
         {
-            BuildGameAssets();
-            Console.WriteLine("1. Create new player");
-            Console.WriteLine("2. Select player");
+            Console.WriteLine("(1) Create new player");
+            Console.WriteLine("(2) Select player");
             Console.Write(">>> ");
             int playerChoice = Int32.Parse(Console.ReadLine());
             switch (playerChoice)
             {
                 case 1:
                     AddPlayer();
-                    LoadPlayer();
                     break;
                 case 2:
                     LoadPlayer();
@@ -176,13 +118,14 @@ namespace PokemonPocket
             Player.LoadPokemons(PokemonContext);
             while (true)
             {
-                Console.WriteLine("1. Add pokemon");
-                Console.WriteLine("2. List pokemons");
-                Console.WriteLine("3. List evolvable pokemons");
-                Console.WriteLine("4. Evolve pokemon");
-                Console.WriteLine("5. Battle");
-                Console.WriteLine("6. Heal pokemons");
-                Console.WriteLine("7. Exit");
+                Console.WriteLine("(1) Add pokemon");
+                Console.WriteLine("(2) List pokemons");
+                Console.WriteLine("(3) List evolvable pokemons");
+                Console.WriteLine("(4) Evolve pokemon");
+                Console.WriteLine("(5) Battle");
+                Console.WriteLine("(6) Heal pokemons");
+                Console.WriteLine("(7) Show player info");
+                Console.WriteLine("(8) Exit");
 
                 Console.Write(">>> ");
                 int gameChoice = Int32.Parse(Console.ReadLine());
@@ -209,6 +152,9 @@ namespace PokemonPocket
                         Player.HealAllPokemons();
                         break;
                     case 7:
+                        Console.WriteLine(Player.Summary);
+                        break;
+                    case 8:
                         Exit();
                         break;
                 }

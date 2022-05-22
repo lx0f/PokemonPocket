@@ -1,21 +1,8 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace PokemonPocket
 {
-    class Skill
-    {
-        [Key]
-        public string Name { get; set; }
-        [ForeignKey("PType")]
-        public string PTypeName { get; set; }
-        public int BaseDamage { get; set; }
-        public Skill(string name, int baseDamage, string pTypeName)
-        {
-            Name = name;
-            BaseDamage = baseDamage;
-            PTypeName = pTypeName;
-        }
-    }
     class SkillMap
     {
         [Key]
@@ -31,6 +18,19 @@ namespace PokemonPocket
             SkillName = skillName;
             PokemonName = pokemonName;
             LevelCriteria = levelCriteria;
+        }
+
+        public static List<SkillMap> ReturnSkillMaps()
+        {
+            List<SkillMap> skillMaps = new List<SkillMap>()
+            {
+                new SkillMap("Lightning Bolt", "Pikachu", 1),
+                new SkillMap("Thunder Shock", "Pikachu", 2),
+                new SkillMap("Thunder Wave", "Pikachu", 5),
+                new SkillMap("Thunder Bolt", "Pikachu", 10),
+            };
+
+            return skillMaps;
         }
     }
 }

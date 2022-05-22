@@ -16,9 +16,7 @@ namespace PokemonPocket
         {
             get
             {
-                return @$"Name: {Name}
-                Total Fights: {TotalFights}
-                Wins: {Wins}";
+                return $"Name:\t{Name}\nFights:\t{TotalFights}\nWins:\t{Wins}\nPoke:\t{Pokemons.Count}";
             }
         }
         [NotMapped]

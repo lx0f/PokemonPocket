@@ -2,9 +2,6 @@ using System;
 using System.Linq;
 namespace PokemonPocket
 {
-    class PlayerBattle
-    {
-    }
     class ComputerBattle
     {
         public Player Player { get; set; }
@@ -35,7 +32,7 @@ namespace PokemonPocket
             for (int i = 0; i < Player.Pokemons.Count; i++)
             {
                 Pokemon pokemon = Player.Pokemons[i];
-                Console.WriteLine($"{i}: {pokemon.Name} Lv. {pokemon.Level} Hp. {pokemon.Health}/{pokemon.MaxHealth}");
+                Console.WriteLine($"({i}) {pokemon.Name}\n\tLVL {pokemon.Level}\n\tHP {pokemon.Health}/{pokemon.MaxHealth}");
             }
             Console.WriteLine("Choose your pokemon");
             Console.Write(">>> ");
@@ -89,9 +86,9 @@ namespace PokemonPocket
             while ((Pokemon.Health > 0 && EnemyPokemon.Health > 0) && !forfeited)
             {
                 ShowScene();
-                Console.WriteLine("1. Fight");
-                Console.WriteLine("2. Pokemon");
-                Console.WriteLine("3. Forfeit");
+                Console.WriteLine("(1) Fight");
+                Console.WriteLine("(2) Pokemon");
+                Console.WriteLine("(3) Forfeit");
 
                 Console.Write(">>> ");
                 int choice = Int32.Parse(Console.ReadLine());
