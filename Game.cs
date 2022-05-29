@@ -151,11 +151,16 @@ namespace PokemonPocket
                         int choice = Insero.PromptInt("Choose", netOptions);
                         if (choice == 0)
                         {
-                            Server.Start();
+                            Server server = new Server(Player, PokemonContext);
+                            server.Pokemon = Player.Pokemons[0];
+                            server.Start();
+                            PokemonContext.SaveChanges();
                         }
                         else if (choice == 1)
                         {
-                            Client.Start();
+                            Client client = new Client(Player, PokemonContext);
+                            client.Start();
+                            PokemonContext.SaveChanges();
                         }
                         break;
                 }
