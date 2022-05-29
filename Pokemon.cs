@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace PokemonPocket
 {
-    class Pokemon
+    public class Pokemon
     {
         [Key]
         public int PokemonID { get; set; }
@@ -104,7 +104,7 @@ namespace PokemonPocket
         }
     }
 
-    class Pikachu : Pokemon
+    public class Pikachu : Pokemon
     {
         public Pikachu() : base()
         {
@@ -115,7 +115,7 @@ namespace PokemonPocket
         }
     }
 
-    class Raichu : Pikachu
+    public class Raichu : Pikachu
     {
         public Raichu() : base()
         {

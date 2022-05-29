@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 namespace PokemonPocket
 {
-    class Game
+    public class Game
     {
         public PokemonContext PokemonContext { get; set; }
         // TODO: change to private

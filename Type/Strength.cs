@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PokemonPocket
 {
-    class PTypeStrength
+    public class PTypeStrength
     {
         [Key]
         public int PTypeStrengthID { get; set; }

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 namespace PokemonPocket
 {
-    class PokemonContext : DbContext
+    public class PokemonContext : DbContext
     {
         public DbSet<Player> Players { get; set; }
         public DbSet<Pokemon> Pokemons { get; set; }

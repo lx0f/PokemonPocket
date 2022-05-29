@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 namespace PokemonPocket
 {
-    class Insero
+    public class Insero
     {
         public static int PromptInt(string prompt)
         {

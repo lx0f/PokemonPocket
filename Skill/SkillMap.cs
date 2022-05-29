@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace PokemonPocket
 {
-    class SkillMap
+    public class SkillMap
     {
         [Key]
         public int SkillMapID { get; set; }

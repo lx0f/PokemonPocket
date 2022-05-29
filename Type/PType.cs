@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 namespace PokemonPocket
 {
-    class PType
+    public class PType
     {
         [Key]
         public string Name { get; set; }
