@@ -31,17 +31,21 @@ namespace PokemonPocket
         }
         public List<Skill> LoadSkills(PokemonContext pokemonContext)
         {
-            List<Skill> skills = new List<Skill>() { };
-            pokemonContext.SkillMaps
-                .Where(skillMap => skillMap.PokemonName == Name)
-                .Where(skillMap => skillMap.LevelCriteria <= Level)
-                .OrderBy(skillMap => skillMap.SkillName)
-                .ToList()
-                .ForEach(skillMap =>
+            List<Skill> skills = new List<Skill>();
+            List<SkillMap> skillMaps = new List<SkillMap>();
+            foreach (SkillMap skillMap in pokemonContext.SkillMaps)
+            {
+                if ((Pokemon.IsSubclassOf(Name, skillMap.PokemonName) || Name == skillMap.PokemonName) && skillMap.LevelCriteria <= Level)
                 {
-                    Skill skill = pokemonContext.Skills.Find(skillMap.SkillName);
-                    skills.Add(skill);
-                });
+                    skillMaps.Add(skillMap);
+                }
+            }
+
+            skillMaps.ForEach(sm =>
+            {
+                skills.Add(pokemonContext.Skills.Find(sm.SkillName));
+            });
+
             Skills = skills;
             return skills;
         }
@@ -74,6 +78,18 @@ namespace PokemonPocket
             try
             {
                 bool res = Type.GetType($"PokemonPocket.{pokemonName}").IsSubclassOf(typeof(Pokemon));
+                return res;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public static bool IsSubclassOf(string pokemonName, string parentName)
+        {
+            try
+            {
+                bool res = Type.GetType($"PokemonPocket.{pokemonName}").IsSubclassOf(Type.GetType($"PokemonPocket.{parentName}"));
                 return res;
             }
             catch
