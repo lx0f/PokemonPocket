@@ -99,5 +99,9 @@ namespace PokemonPocket
 
             return skills;
         }
+        public string Display()
+        {
+            return $"Name: {Name}\t\t{PTypeName}";
+        }
     }
 }

@@ -26,36 +26,25 @@ namespace PokemonPocket
         public Player(string name) { Name = name; }
         public Pokemon AddPokemon(PokemonContext pokemonContext)
         {
-            Console.WriteLine("Enter pokemon name");
-            Console.Write(">>> ");
-            string pokemonName = Console.ReadLine();
-
-            Type pokemonClass = Type.GetType($"PokemonPocket.{pokemonName}");
-            if (pokemonClass == null)
+            string pokemonName = Insero.PromptString("Enter pokemon name").ToLower();
+            pokemonName = char.ToUpper(pokemonName[0]) + pokemonName.Substring(1);
+            while (!(Pokemon.IsPokemon(pokemonName)))
             {
-                Console.WriteLine($"There is no pokemons with the name {pokemonName}");
-                return null;
+                Console.WriteLine("That is not a valid pokemon");
+                pokemonName = Insero.PromptString("Enter pokemon name").ToLower();
+                pokemonName = char.ToUpper(pokemonName[0]) + pokemonName.Substring(1);
             }
-            else
-            {
-                Pokemon newPokemon = (Pokemon)Activator.CreateInstance(pokemonClass);
-                newPokemon.PlayerID = PlayerID;
-                pokemonContext.Pokemons.Add(newPokemon);
-                pokemonContext.SaveChanges();
-                LoadPokemons(pokemonContext);
-                return newPokemon;
-            }
+            Pokemon newPokemon = Pokemon.CreatePokemon(pokemonName);
+            newPokemon.PlayerID = PlayerID;
+            pokemonContext.Pokemons.Add(newPokemon);
+            pokemonContext.SaveChanges();
+            LoadPokemons(pokemonContext);
+            return newPokemon;
         }
         public Pokemon RemovePokemon(PokemonContext pokemonContext)
         {
-            for (int i = 0; i < Pokemons.Count; i++)
-            {
-                Pokemon pokemon = Pokemons[i];
-                Console.WriteLine($"{i}: {pokemon.Name} Lv. {pokemon.Level} Hp. {pokemon.Health}/{pokemon.MaxHealth}");
-            }
-            Console.WriteLine("Choose which pokemon to remove");
-            Console.Write(">>> ");
-            int index = Int32.Parse(Console.ReadLine());
+            List<string> options = Pokemons.Select(p => $"{p.Name} Lv. {p.Level} Hp. {p.Health}/{p.MaxHealth}").ToList();
+            int index = Insero.PromptInt("Choose a pokemon to remove", options);
             Pokemon chosenPokemon = Pokemons[index];
             pokemonContext.Pokemons.Remove(chosenPokemon);
             pokemonContext.SaveChanges();
@@ -64,13 +53,20 @@ namespace PokemonPocket
         }
         public Pokemon EvolvePokemon(PokemonContext pokemonContext)
         {
-            // ShowEvolvablePokemons();
+            if (!(ShowEvolvablePokemons()))
+            {
+                return null;
+            }
+            string pokemonName = Insero.PromptString("Enter pokemon name").ToLower();
+            pokemonName = char.ToUpper(pokemonName[0]) + pokemonName.Substring(1);
+            while (!(Pokemon.IsPokemon(pokemonName)))
+            {
+                Console.WriteLine("That pokemon does not exist!");
+                pokemonName = Insero.PromptString("Enter pokemon name").ToLower();
+                pokemonName = char.ToUpper(pokemonName[0]) + pokemonName.Substring(1);
+            }
             Console.WriteLine("Enter pokemon name you want to evolve");
             Console.Write(">>> ");
-            string pokemonName = Console.ReadLine();
-
-            Type pokemonClass = Type.GetType($"PokemonPocket.{pokemonName}");
-            if (!Pokemon.IsPokemon(pokemonName)) { return null; }
             PokemonMaster pokemonMaster = PokemonMaster.PokemonMasters
                 .SingleOrDefault(pokemonMaster => pokemonMaster.EvolveFrom == pokemonName);
 
@@ -91,14 +87,8 @@ namespace PokemonPocket
                 List<Pokemon> confirmDeletePokemon = new List<Pokemon>() { };
                 while (deleteCriteria > 0)
                 {
-                    Console.WriteLine($"Choose which {pokemonName} to sacrifice, {deleteCriteria} left");
-                    for (int i = 0; i < toDeletePokemons.Count; i++)
-                    {
-                        Pokemon pokemon = toDeletePokemons[i];
-                        Console.WriteLine($"{i}: {pokemon.Name} Lv. {pokemon.Level} Hp. {pokemon.Health}/{pokemon.MaxHealth}");
-                    }
-                    Console.Write(">>> ");
-                    int index = Int32.Parse(Console.ReadLine());
+                    List<string> options = toDeletePokemons.Select(p => $"{p.Name} Lv. {p.Level} Hp. {p.Health}/{p.MaxHealth}").ToList();
+                    int index = Insero.PromptInt($"Choose which {pokemonName} to sacrifice, {deleteCriteria} left", options);
                     Pokemon selectedPokemon = toDeletePokemons[index];
                     toDeletePokemons.Remove(selectedPokemon);
                     confirmDeletePokemon.Add(selectedPokemon);
@@ -139,10 +129,13 @@ namespace PokemonPocket
                 Console.WriteLine($"Level: {pokemon.Level}");
                 Console.WriteLine($"Health: {pokemon.Health}/{pokemon.MaxHealth}");
                 Console.WriteLine($"Experience: {pokemon.Experience}/{pokemon.MaxExperience}");
+                Console.WriteLine("Skills:");
+                pokemon.Skills.ForEach(s => Console.WriteLine($"  - Name: {s.Name}  {s.PTypeName}"));
             });
         }
-        public void ShowEvolvablePokemons()
+        public bool ShowEvolvablePokemons()
         {
+            bool canEvolve = false;
             PokemonMaster.PokemonMasters.ForEach(pokemonMaster =>
             {
                 int pokemonCount = Pokemons
@@ -151,9 +144,17 @@ namespace PokemonPocket
 
                 if (pokemonCount >= pokemonMaster.EvolveCriteria)
                 {
-                    Console.WriteLine($"{pokemonMaster.EvolveFrom} can be evolved into {pokemonMaster.EvolveTo}!!");
+                    Console.WriteLine($"{pokemonMaster.EvolveFrom} --> {pokemonMaster.EvolveTo}!!");
+                    canEvolve = true;
                 }
             });
+
+            if (!(canEvolve))
+            {
+                Console.WriteLine("There are no pokemons that can be evolved");
+                return canEvolve;
+            }
+            return canEvolve;
         }
         public void HealAllPokemons()
         {

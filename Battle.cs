@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 namespace PokemonPocket
 {
@@ -29,14 +30,8 @@ namespace PokemonPocket
         }
         public Pokemon PlayerChoosePokemon()
         {
-            for (int i = 0; i < Player.Pokemons.Count; i++)
-            {
-                Pokemon pokemon = Player.Pokemons[i];
-                Console.WriteLine($"({i}) {pokemon.Name}\n\tLVL {pokemon.Level}\n\tHP {pokemon.Health}/{pokemon.MaxHealth}");
-            }
-            Console.WriteLine("Choose your pokemon");
-            Console.Write(">>> ");
-            int index = Int32.Parse(Console.ReadLine());
+            List<string> options = Player.Pokemons.Select(p => $"{p.Name}\n\tLVL {p.Level}\n\tHP {p.Health}/{p.MaxHealth}").ToList();
+            int index = Insero.PromptInt("Choose your pokemon", options);
             Pokemon = Player.Pokemons[index];
             return Pokemon;
         }
@@ -89,18 +84,14 @@ namespace PokemonPocket
                 Console.WriteLine("(1) Fight");
                 Console.WriteLine("(2) Pokemon");
                 Console.WriteLine("(3) Forfeit");
-
-                Console.Write(">>> ");
-                int choice = Int32.Parse(Console.ReadLine());
+                int choice = Insero.PromptInt("Choose action", 1, 3);
 
                 switch (choice)
                 {
                     case 1:
-                        // Choose skill
-                        Pokemon.ShowSkills();
-                        Console.WriteLine("Choose skill");
-                        Console.Write(">>> ");
-                        int skillChoice = Int32.Parse(Console.ReadLine());
+                        List<string> options = Pokemon.Skills.Select(s => $"Name: {s.Name}\t{s.PTypeName}").ToList();
+                        int skillChoice = Insero.PromptInt("Choose skill", options);
+
                         Skill skill = Pokemon.UseSkill(skillChoice);
                         PokemonAttacks(Pokemon, EnemyPokemon, skill);
                         if (EnemyPokemon.Health > 0)

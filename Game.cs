@@ -49,49 +49,24 @@ namespace PokemonPocket
         // TODO: Change to private
         public Player AddPlayer()
         {
-            Console.WriteLine("Enter your new player name");
-            Console.Write(">>> ");
-            string playerName = Console.ReadLine();
-
-            Player existingPlayer = PokemonContext.Players
-                .SingleOrDefault(player => player.Name == playerName);
-            if (existingPlayer == null)
-            {
-                Player newPlayer = new Player(playerName);
-                PokemonContext.Players.Add(newPlayer);
-                PokemonContext.SaveChanges();
-                Console.WriteLine($"Created new player {playerName}!");
-                Player = newPlayer;
-                return newPlayer;
-            }
-            else
-            {
-                Console.WriteLine($"A player with the name {playerName} already exists!");
-                return null;
-            }
+            List<string> existingPlayerNames = PokemonContext.Players.Select(p => p.Name).ToList();
+            string playerName = Insero.PromptString("Enter your new player name", existingPlayerNames);
+            Player newPlayer = new Player(playerName);
+            PokemonContext.Players.Add(newPlayer);
+            PokemonContext.SaveChanges();
+            Console.WriteLine($"Created new player {playerName}!");
+            Player = newPlayer;
+            return newPlayer;
         }
 
         public Player LoadPlayer()
         {
-            Console.WriteLine("Choose player");
-            PokemonContext.Players
-                .ToList()
-                .ForEach(player => Console.WriteLine(player.Name));
-            Console.Write(">>> ");
-            string playerName = Console.ReadLine();
-
+            List<string> existingPlayerNames = PokemonContext.Players.Select(p => p.Name).ToList();
+            string playerName = Insero.PromptString(existingPlayerNames, "Enter player name");
             Player existingPlayer = PokemonContext.Players
                 .SingleOrDefault(player => player.Name == playerName);
-            if (existingPlayer == null)
-            {
-                Console.WriteLine($"There is no player with the name {playerName}");
-                return null;
-            }
-            else
-            {
-                Player = existingPlayer;
-                return existingPlayer;
-            }
+            Player = existingPlayer;
+            return existingPlayer;
         }
 
         public void Exit()
@@ -102,16 +77,17 @@ namespace PokemonPocket
         }
         public void GameLoop()
         {
-            Console.WriteLine("(1) Create new player");
-            Console.WriteLine("(2) Select player");
-            Console.Write(">>> ");
-            int playerChoice = Int32.Parse(Console.ReadLine());
+            List<string> options = new List<string>(){
+                "Create new player",
+                "Select player"
+            };
+            int playerChoice = Insero.PromptInt("Choose", options);
             switch (playerChoice)
             {
-                case 1:
+                case 0:
                     AddPlayer();
                     break;
-                case 2:
+                case 1:
                     LoadPlayer();
                     break;
             }
@@ -127,8 +103,7 @@ namespace PokemonPocket
                 Console.WriteLine("(7) Show player info");
                 Console.WriteLine("(8) Exit");
 
-                Console.Write(">>> ");
-                int gameChoice = Int32.Parse(Console.ReadLine());
+                int gameChoice = Insero.PromptInt("Choose", 1, 8);
 
                 switch (gameChoice)
                 {

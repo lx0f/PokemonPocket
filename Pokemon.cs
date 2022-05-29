@@ -71,8 +71,21 @@ namespace PokemonPocket
         }
         public static bool IsPokemon(string pokemonName)
         {
+            try
+            {
+                bool res = Type.GetType($"PokemonPocket.{pokemonName}").IsSubclassOf(typeof(Pokemon));
+                return res;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public static Pokemon CreatePokemon(string pokemonName)
+        {
             Type possibleClass = Type.GetType($"PokemonPocket.{pokemonName}");
-            return possibleClass.IsSubclassOf(typeof(Pokemon));
+            Pokemon newPokemon = (Pokemon)Activator.CreateInstance(possibleClass);
+            return newPokemon;
         }
     }
 
@@ -89,6 +102,12 @@ namespace PokemonPocket
 
     class Raichu : Pikachu
     {
+        public Raichu() : base()
+        {
+            MaxHealth = 30;
+            Health = 30;
+            BaseExperience = 60;
+        }
         public Raichu(bool evolved = false) : base()
         {
             MaxHealth = 30;
