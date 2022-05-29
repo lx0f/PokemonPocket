@@ -30,9 +30,12 @@ namespace PokemonPocket
         }
         public Pokemon PlayerChoosePokemon()
         {
-            List<string> options = Player.Pokemons.Select(p => $"{p.Name}\n\tLVL {p.Level}\n\tHP {p.Health}/{p.MaxHealth}").ToList();
+            List<Pokemon> allowed = Player.Pokemons.Where(p => p.Health > 0).ToList();
+            List<string> options = allowed
+                .Select(p => $"{p.Name}\n\tLVL {p.Level}\n\tHP {p.Health}/{p.MaxHealth}")
+                .ToList();
             int index = Insero.PromptInt("Choose your pokemon", options);
-            Pokemon = Player.Pokemons[index];
+            Pokemon = allowed[index];
             return Pokemon;
         }
         public int CalculateExperienceYield(Pokemon pokemon, Pokemon enemyPokemon)

@@ -11,7 +11,7 @@ namespace PokemonPocket
         public Game()
         {
             PokemonContext = new PokemonContext();
-            PokemonContext.Database.EnsureDeleted();
+            // PokemonContext.Database.EnsureDeleted();
             PokemonContext.Database.EnsureCreated();
             Console.WriteLine("Building game assets");
             BuildGameAssets();
@@ -22,6 +22,9 @@ namespace PokemonPocket
         {
             PokemonContext.Skills.RemoveRange(PokemonContext.Skills.ToList());
             PokemonContext.SkillMaps.RemoveRange(PokemonContext.SkillMaps.ToList());
+            PokemonContext.PTypes.RemoveRange(PokemonContext.PTypes.ToList());
+            PokemonContext.PTypeStrengths.RemoveRange(PokemonContext.PTypeStrengths.ToList());
+            PokemonContext.PTypeResistants.RemoveRange(PokemonContext.PTypeResistants.ToList());
 
             Console.WriteLine("Loading Types...");
             List<PType> pTypes = PType.ReturnTypes();
@@ -88,6 +91,12 @@ namespace PokemonPocket
                     AddPlayer();
                     break;
                 case 1:
+                    if (PokemonContext.Players.Count() == 0)
+                    {
+                        Console.WriteLine("There are no players to select from");
+                        AddPlayer();
+                        break;
+                    }
                     LoadPlayer();
                     break;
             }
@@ -120,6 +129,11 @@ namespace PokemonPocket
                         Player.EvolvePokemon(PokemonContext);
                         break;
                     case 5:
+                        if (Player.Pokemons.Where(p => p.Health > 0).Count() == 0)
+                        {
+                            Console.WriteLine("You don't have any pokemons to fight with!");
+                            break;
+                        }
                         ComputerBattle computerBattle = new ComputerBattle(Player, PokemonContext);
                         computerBattle.FightLoop();
                         break;
