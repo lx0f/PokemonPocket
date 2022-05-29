@@ -112,7 +112,7 @@ namespace PokemonPocket
                 Console.WriteLine("(7) Show player info");
                 Console.WriteLine("(8) Exit");
 
-                int gameChoice = Insero.PromptInt("Choose", 1, 8);
+                int gameChoice = Insero.PromptInt("Choose", 1, 9);
 
                 switch (gameChoice)
                 {
@@ -145,6 +145,18 @@ namespace PokemonPocket
                         break;
                     case 8:
                         Exit();
+                        break;
+                    case 9:
+                        List<string> netOptions = new List<string>() { "Host", "Connect" };
+                        int choice = Insero.PromptInt("Choose", netOptions);
+                        if (choice == 0)
+                        {
+                            Server.Start();
+                        }
+                        else if (choice == 1)
+                        {
+                            Client.Start();
+                        }
                         break;
                 }
             }
